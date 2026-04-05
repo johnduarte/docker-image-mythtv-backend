@@ -18,9 +18,9 @@ RUN apt-get update -y -qq && \
     locale-gen en_US.UTF-8
 
 # add Mate and x2go repositoires
-RUN add-apt-repository ppa:ubuntu-mate-dev/jammy-mate && \
-    add-apt-repository ppa:x2go/stable && \
-    apt-get update -y -qq
+RUN add-apt-repository ppa:ubuntu-mate-dev/jammy-mate
+RUN add-apt-repository ppa:x2go/stable
+RUN apt-get update -y -qq
 
 # install supervisor and openssh
 RUN apt-get install -y supervisor openssh-server pwgen vim
