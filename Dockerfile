@@ -7,9 +7,9 @@ ENV USER=mythtv \
     DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 # Setup x2go ##################################################
 RUN apt-get update -y -qq && \
