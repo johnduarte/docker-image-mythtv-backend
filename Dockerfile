@@ -1,4 +1,4 @@
-FROM apnar/ubuntu-mate-x2go-desktop
+FROM ubuntu:jammy
 
 USER root
 
@@ -7,6 +7,48 @@ ENV USER=mythtv \
     DEBIAN_FRONTEND=noninteractive \
     TERM=xterm
 
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+# Setup x2go ##################################################
+RUN apt-get update -y -qq && \
+    apt-get dist-upgrade -y && \
+    apt-get install locales software-properties-common -y && \
+    locale-gen en_US.UTF-8 && \
+
+# add Mate and x2go repositoires
+    add-apt-repository ppa:ubuntu-mate-dev/jammy-mate && \
+    add-apt-repository ppa:x2go/stable && \
+    apt-get update -y -qq && \
+
+# install supervisor and openssh
+    apt-get install -y supervisor openssh-server pwgen vim && \
+
+# install x2go and Mate
+    apt-get install -y x2goserver x2goserver-xsession && \
+    apt-get install -y --no-install-recommends ubuntu-mate-core x2gomatebindings && \
+
+# clean up
+    apt-get autoclean && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/* && \
+
+# sshd stuff
+    mkdir -p /var/run/sshd && \
+    sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
+    sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && \
+    sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
+    sed -i "s/#PasswordAuthentication/PasswordAuthentication/g" /etc/ssh/sshd_config && \
+
+# fix so resolvconf can be configured
+   echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections && \
+
+# create needed folders
+    mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && \
+    mkdir -p /var/run/dbus
+
+
+# Setup mythtv ##################################################
 # add repositories
 RUN add-apt-repository universe -y && \
     apt-add-repository ppa:mythbuntu/36 -y && \
@@ -53,7 +95,6 @@ RUN add-apt-repository universe -y && \
 EXPOSE 5000/udp 6543 6544 6522 3306
 VOLUME /var/lib/mysql/ /mnt/recordings /mnt/movies
 
-COPY ["docker-entrypoint.sh", "/"]
+COPY ["*.conf", "/etc/supervisor/conf.d/"]
+COPY ["*.sh", "/"]
 COPY ["config.xml", "/etc/mythtv/"]
-COPY ["mariadb.conf", "/etc/supervisor/conf.d/"]
-COPY ["mythtv.conf", "/etc/supervisor/conf.d/"]
