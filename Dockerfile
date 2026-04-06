@@ -51,39 +51,39 @@ RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-
 # add repositories
 RUN add-apt-repository universe -y && \
     apt-add-repository ppa:mythbuntu/36 -y && \
-    apt-get update -qq && \
+    apt-get update -qq
 
 # install mythtv-backend, database and ping util
-    apt-get install -y --no-install-recommends gettext-base mariadb-server tzdata && \
+RUN apt-get install -y --no-install-recommends gettext-base mariadb-server tzdata && \
     sed -i 's/bind-address/#bind-address/' /etc/mysql/mariadb.conf.d/50-server.cnf && \
-    apt-get install -y --no-install-recommends mythtv-backend-master mythtv-theme-mythbuntu iputils-ping && \
+    apt-get install -y --no-install-recommends mythtv-backend-master mythtv-theme-mythbuntu iputils-ping
 
 # create/place required files/folders
-    mkdir -p /home/mythtv/.mythtv /var/lib/mythtv /var/log/mythtv /var/run/mysqld /root/.mythtv \
-        /mnt/movies /mnt/recordings && \
+RUN mkdir -p /home/mythtv/.mythtv /var/lib/mythtv /var/log/mythtv /var/run/mysqld /root/.mythtv \
+        /mnt/movies /mnt/recordings
 
 # set a password for user mythtv and add to required groups
-    echo "mythtv:mythtv" | chpasswd && \
-    usermod -s /bin/bash -d /home/mythtv -a -G users,mythtv,adm,sudo mythtv && \
+RUN echo "mythtv:mythtv" | chpasswd && \
+    usermod -s /bin/bash -d /home/mythtv -a -G users,mythtv,adm,sudo mythtv
 
 # have myth setup use proper start and stop scripts
-    sed -i 's#/usr/sbin/service mythtv-backend stop#/usr/bin/supervisorctl stop mythtv#' /usr/bin/mythtv-setup && \
-    sed -i 's#/usr/sbin/service mythtv-backend start#/usr/bin/supervisorctl start mythtv#' /usr/bin/mythtv-setup && \
+RUN sed -i 's#/usr/sbin/service mythtv-backend stop#/usr/bin/supervisorctl stop mythtv#' /usr/bin/mythtv-setup && \
+    sed -i 's#/usr/sbin/service mythtv-backend start#/usr/bin/supervisorctl start mythtv#' /usr/bin/mythtv-setup
 
 # set permissions for files/folders
-    mkdir /home/mythtv/Desktop && \
+RUN mkdir /home/mythtv/Desktop && \
     cp /usr/share/applications/mythtv-setup.desktop /home/mythtv/Desktop && \
     chmod 775 /home/mythtv/Desktop/mythtv-setup.desktop && \
     chown -R mythtv:mythtv /home/mythtv/Desktop && \
-    chown -R mythtv:users /var/lib/mythtv /var/log/mythtv /mnt/recordings /mnt/movies && \
+    chown -R mythtv:users /var/lib/mythtv /var/log/mythtv /mnt/recordings /mnt/movies
 
 # change ssh port
-    sed -i 's/Port 22/Port 6522/' /etc/ssh/sshd_config && \
+RUN sed -i 's/Port 22/Port 6522/' /etc/ssh/sshd_config
 
   #  printf '[mysqld]\nskip-name-resolve\n' > /etc/mysql/conf.d/skip-name-resolve.cnf && \
 
 # clean up
-    apt-get clean && \
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
         /usr/share/man /usr/share/groff /usr/share/info \
         /usr/share/lintian /usr/share/linda /var/cache/man && \
