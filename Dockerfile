@@ -17,8 +17,7 @@ RUN apt-get update -y -qq && \
     apt-get install locales software-properties-common -y && \
     locale-gen en_US.UTF-8
 
-# add Mate and x2go repositoires
-RUN add-apt-repository ppa:ubuntu-mate-dev/jammy-mate
+# add x2go repositoires
 RUN add-apt-repository ppa:x2go/stable
 RUN apt-get update -y -qq
 
