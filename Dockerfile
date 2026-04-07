@@ -1,4 +1,4 @@
-FROM ubuntu:resolute
+FROM ubuntu:noble
 
 USER root
 
