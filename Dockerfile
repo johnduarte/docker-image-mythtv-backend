@@ -36,7 +36,7 @@ RUN apt-get autoclean && apt-get autoremove && \
 RUN mkdir -p /var/run/sshd && \
     sed -i "s/UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && \
     sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && \
-    sed -i "s/PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
+    sed -i "s/#PermitRootLogin.*/PermitRootLogin yes/g" /etc/ssh/sshd_config && \
     sed -i "s/#PasswordAuthentication/PasswordAuthentication/g" /etc/ssh/sshd_config
 
 # fix so resolvconf can be configured
@@ -78,7 +78,7 @@ RUN mkdir /home/mythtv/Desktop && \
     chown -R mythtv:users /var/lib/mythtv /var/log/mythtv /mnt/recordings /mnt/movies
 
 # change ssh port
-RUN sed -i 's/Port 22/Port 6522/' /etc/ssh/sshd_config
+RUN sed -i 's/#Port 22/Port 6522/' /etc/ssh/sshd_config
 
   #  printf '[mysqld]\nskip-name-resolve\n' > /etc/mysql/conf.d/skip-name-resolve.cnf && \
 
