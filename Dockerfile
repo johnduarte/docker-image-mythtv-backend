@@ -98,3 +98,5 @@ COPY ["*.conf", "/etc/supervisor/conf.d/"]
 COPY ["*.sh", "/"]
 COPY ["config.xml", "/etc/mythtv/"]
 COPY ["mythconverg*.pl", "/home/mythtv/"]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
