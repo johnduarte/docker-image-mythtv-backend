@@ -40,10 +40,10 @@ RUN mkdir -p /var/run/sshd && \
     sed -i "s/#PasswordAuthentication/PasswordAuthentication/g" /etc/ssh/sshd_config
 
 # fix so resolvconf can be configured
-RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections && \
+RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
 # create needed folders
-    mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && \
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix && \
     mkdir -p /var/run/dbus
 
 
